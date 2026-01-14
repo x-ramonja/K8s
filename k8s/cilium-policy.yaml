@@ -1,0 +1,40 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny
+  namespace: juice-shop
+spec:
+  endpointSelector: {}
+
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-http
+  namespace: juice-shop
+spec:
+  endpointSelector:
+    matchLabels:
+      app: juice-shop
+  ingress:
+  - toPorts:
+    - ports:
+      - port: "3000"
+        protocol: TCP
+
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: juice-shop
+spec:
+  endpointSelector:
+    matchLabels:
+      app: juice-shop
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
